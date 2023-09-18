@@ -1,91 +1,72 @@
+
 import './css/styles.css';
-import { fetchCountries } from './fetchCountries.js';
-import debounce from 'lodash.debounce';
+import NewFetchPicture from './js/fetchPictures.js'
 import Notiflix from 'notiflix';
 
-const DEBOUNCE_DELAY = 500;
+const newFetchPicture = new NewFetchPicture()
 
-const searchBox = document.getElementById("search-box");
-const wrapperList = document.querySelector(".country-list");
-const wrapperEl = document.querySelector(".country-info");
-
-searchBox.addEventListener(`input`,debounce(handleInputSubmit, DEBOUNCE_DELAY));
-wrapperList.addEventListener('click', handleListClick);
+const form = document.querySelector('.search-form')
+const submitBtn = document.querySelector('.submit-btn')
+const markupForm = document.querySelector('.gallery')
+const loadMoreBtn = document.querySelector('.load-more')
 
 
 
-function handleInputSubmit(event) {
-  const searchCountry = event.target.value.trim();
+form.addEventListener('submit', handleSearchRes)
+loadMoreBtn.addEventListener('click', handleLoadMore)
+
+
+function handleSearchRes(e){
+e.preventDefault()
+
+newFetchPicture.resetPage()
+newFetchPicture.query = e.target.elements.searchQuery.value.trim()
+
+newFetchPicture.fetchFunc()
+.then(createMarkup)
+
+// Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+
+  }
+
+function handleLoadMore(){
+
+  newFetchPicture.updatePage()
+  newFetchPicture.fetchFunc()
+  .then(createMarkup)
   
-  if (!searchCountry) {
-    resetMarkup(wrapperList);
-    resetMarkup(wrapperEl);
-    return;
-  }
-
-  fetchCountries(searchCountry)
-  .then(thenResult)
-  .catch(error => {
-    console.error(error);
-    Notiflix.Notify.failure('Oops, there is no country with that name');
-  });
 }
 
-function thenResult(data){
-  if (data.length > 10){
-    resetMarkup(wrapperList);
-    Notiflix.Notify.info("Too many matches found. Please enter a more specific name.");
-  } else if (data.length > 2 && data.length <= 10) {
-    resetMarkup(wrapperEl);
-    createShortmarkup(data);
-    
-  } else {
-    resetMarkup(wrapperList);
-    createMarkupCountryInfo(data);
+
+function createMarkup(searchResult){
+    console.log(searchResult)
+
+  const { hits } = searchResult;
+    let allMarkup = '';
+
+  hits.forEach(({largeImageURL, tags, likes, views, comments, downloads}) => {
+  const markup = `<div class="info">
+    <img src="${largeImageURL}" alt="${tags}" loading="lazy" />
+   <p class="info-item">
+     <b>${likes}</b>
+   </p>
+   <p class="info-item">
+     <b>${views}</b>
+   </p>
+   <p class="info-item">
+     <b>${comments}</b>
+   </p>
+   <p class="info-item">
+     <b>${downloads}</b>
+   </p>
+ </div>
+</div>`
+
+allMarkup += markup;
+})
+
+markupForm.innerHTML = allMarkup;
   
-  }
-}
+   }
 
-function handleListClick(event) {
-  const target = event.target;
-  const countryName = target.closest('div').dataset.name;
-  if (countryName) {
-    fetchCountries(countryName)
-      .then(createMarkupCountryInfo)
-      .catch(error => {
-        console.error(error);
-        Notiflix.Notify.failure('Oops, something went wrong');
-      });
-  }
-}
 
-function createShortmarkup(searchCountry) {
-  const shortMarkup = searchCountry.map(({name,flags}) => {
-    return `<div>
-      <img class="country-list__flag" src="${flags.svg}" alt="Flag of ${name.official}" width = 40px height = 30px>
-      <p> ${name.common}</p>
-    </div>`;
-  });
-
-  wrapperList.innerHTML = shortMarkup.join("");
-}
-
-function createMarkupCountryInfo(searchCountry){
-  const markup = searchCountry.map(({name,capital,population,languages,flags}) => {
-    return `<div> 
-      <img class="country-list__flag" src="${flags.svg}" alt="Flag of ${name.official}" width = 40px height = 30px>
-      <p> ${name.common}</p>
-    </div> 
-    <div> 
-      <p> Capital: ${capital}</p>
-      <p> Population: ${population}</p>
-      <p> Languages: ${Object.values(languages).join(', ')}</p>
-    </div>`;
-  });
-
-  wrapperEl.innerHTML = markup.join("");
-}
-
-function resetMarkup(element) {
-  element.innerHTML = '';
-}
