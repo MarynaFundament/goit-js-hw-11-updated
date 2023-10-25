@@ -1,5 +1,5 @@
 
-import './css/styles.css';
+import './sass/layouts/_mainform.scss';
 import NewFetchPicture from './js/fetchPictures.js'
 import Notiflix from 'notiflix';
 
@@ -46,20 +46,16 @@ function createMarkup(searchResult){
 
   hits.forEach(({largeImageURL, tags, likes, views, comments, downloads}) => {
   const markup = `<div class="info">
-    <img src="${largeImageURL}" alt="${tags}" loading="lazy" />
-   <p class="info-item">
-     <b>${likes}</b>
-   </p>
-   <p class="info-item">
-     <b>${views}</b>
-   </p>
-   <p class="info-item">
-     <b>${comments}</b>
-   </p>
-   <p class="info-item">
-     <b>${downloads}</b>
-   </p>
- </div>
+    <img class = "photo-img" src="${largeImageURL}" alt="${tags}" loading="lazy" />
+  <ul class="info-list"> 
+  <li class="info-item">   
+   <p >Likes</p>
+    <span>${likes}</span>
+  </li>
+  <li class="info-item"> <p>Views ${views}</p></li>
+  <li class="info-item"> <p>Comments ${comments}</p></li>
+  <li class="info-item"> <p>Downloads ${downloads}</p></li>
+   </ul> 
 </div>`
 
 allMarkup += markup;
