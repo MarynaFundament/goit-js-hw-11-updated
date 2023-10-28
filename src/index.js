@@ -22,6 +22,10 @@ e.preventDefault()
 newFetchPicture.resetPage()
 newFetchPicture.query = e.target.elements.searchQuery.value.trim()
 
+const QueryRes = newFetchPicture.query;
+console.log(QueryRes)
+
+
 newFetchPicture.fetchFunc()
 .then(createMarkup)
 
@@ -48,13 +52,18 @@ function createMarkup(searchResult){
   const markup = `<div class="info">
     <img class = "photo-img" src="${largeImageURL}" alt="${tags}" loading="lazy" />
   <ul class="info-list"> 
-  <li class="info-item">   
-   <p >Likes</p>
-    <span>${likes}</span>
-  </li>
-  <li class="info-item"> <p>Views ${views}</p></li>
-  <li class="info-item"> <p>Comments ${comments}</p></li>
-  <li class="info-item"> <p>Downloads ${downloads}</p></li>
+  <li class="info-capture"> 
+  <p class="list-p">Likes </p>
+  <span class="list-s">${likes}</span></li>
+  <li class="info-capture"> 
+  <p class="list-p">Views </p>
+  <span class="list-s">${views}</span></li>
+  <li class="info-capture"> 
+  <p class="list-p">Comments </p>
+  <span class="list-s">${comments}</span></li>
+  <li class="info-capture"> 
+  <p class="list-p">Downloads </p>
+  <span class="list-s">${downloads}</span></li>
    </ul> 
 </div>`
 

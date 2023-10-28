@@ -5,7 +5,7 @@ export default class NewFetchPicture{
  #KEY = '39518708-26ab694120e376c6ae35268e7'
  query = '';
  page= 1;
- per_page = 3;
+ per_page = 5;
  image_type='photo';
  safesearch='true';
  orientation='horizontal'
@@ -21,7 +21,9 @@ export default class NewFetchPicture{
    orientation:this.orientation
 })
 
-return fetch(`${this.#URL}/?key=${this.#KEY}&${searchParams}`)
+console.log(this.query);
+
+return fetch(`${this.#URL}/?key=${this.#KEY}&${searchParams}&q=${this.query}`)
        .then(response =>  response.json())
       //  .then(r => console.log(r))
        .catch((error) => {
@@ -37,13 +39,13 @@ resetPage(){
 this.page = 1
 }
 
-get query(){
-   return this.searchRes
-}
+// get query(){
+//    return this.searchRes
+// }
 
-set query(newRes){
-   this.searchRes = newRes;
-}
+// set query(newRes){
+//    this.searchRes = newRes;
+// }
 }
 
 
