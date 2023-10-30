@@ -2,6 +2,9 @@
 import './sass/layouts/_mainform.scss';
 import NewFetchPicture from './js/fetchPictures.js'
 import Notiflix from 'notiflix';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
 
 const newFetchPicture = new NewFetchPicture()
 
@@ -17,28 +20,35 @@ loadMoreBtn.addEventListener('click', handleLoadMore)
 
 
 function handleSearchRes(e){
-e.preventDefault()
+e.preventDefault();
 
 newFetchPicture.resetPage()
 newFetchPicture.query = e.target.elements.searchQuery.value.trim()
 
 const QueryRes = newFetchPicture.query;
-console.log(QueryRes)
+
+
+if (newFetchPicture.query === '') {
+  Notiflix.Notify.warning('Please, fill the main field');
+  return;
+}
+
 
 
 newFetchPicture.fetchFunc()
-.then(createMarkup)
+  .then(createMarkup)
+}
 
-// Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
 
-  }
 
 function handleLoadMore(){
+
+  loadMoreBtn.disabled = false;
 
   newFetchPicture.updatePage()
   newFetchPicture.fetchFunc()
   .then(createMarkup)
-  
+
 }
 
 
@@ -48,8 +58,11 @@ function createMarkup(searchResult){
   const { hits } = searchResult;
     let allMarkup = '';
 
+  markupForm.innerHTML = '';
+
   hits.forEach(({largeImageURL, tags, likes, views, comments, downloads}) => {
-  const markup = `<div class="info">
+  const markup = `<a href="${largeImageURL}" class="gallery-item"> 
+  <div class="info">
     <img class = "photo-img" src="${largeImageURL}" alt="${tags}" loading="lazy" />
   <ul class="info-list"> 
   <li class="info-capture"> 
@@ -65,13 +78,24 @@ function createMarkup(searchResult){
   <p class="list-p">Downloads </p>
   <span class="list-s">${downloads}</span></li>
    </ul> 
-</div>`
+</div> </a>`
+
 
 allMarkup += markup;
+
 })
 
-markupForm.innerHTML = allMarkup;
-  
+markupForm.insertAdjacentHTML('beforeend', allMarkup);
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  caption: false,
+  captionDelay: 0,
+});
+
+lightbox.refresh()
+
    }
+
+  
 
 
