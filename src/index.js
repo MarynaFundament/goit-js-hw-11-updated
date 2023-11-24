@@ -2,8 +2,8 @@
 import './sass/layouts/_mainform.scss';
 import NewFetchPicture from './js/fetchPictures.js'
 import Notiflix from 'notiflix';
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import { lightbox } from './js/lightbox.js';
+
 
 
 const newFetchPicture = new NewFetchPicture()
@@ -12,90 +12,144 @@ const form = document.querySelector('.search-form')
 const submitBtn = document.querySelector('.submit-btn')
 const markupForm = document.querySelector('.gallery')
 const loadMoreBtn = document.querySelector('.load-more')
-
-
+const inputEl = document.querySelector('.search-form_input')
+let currentQuery = '';
 
 form.addEventListener('submit', handleSearchRes)
-loadMoreBtn.addEventListener('click', handleLoadMore)
-
 
 function handleSearchRes(e){
 e.preventDefault();
 
 newFetchPicture.resetPage()
 newFetchPicture.query = e.target.elements.searchQuery.value.trim()
-
-const QueryRes = newFetchPicture.query;
-
+inputEl.value = '';
 
 if (newFetchPicture.query === '') {
   Notiflix.Notify.warning('Please, fill the main field');
   return;
 }
 
-
-
-newFetchPicture.fetchFunc()
-  .then(createMarkup)
-}
-
-
-
-function handleLoadMore(){
-
-  loadMoreBtn.disabled = false;
-
-  newFetchPicture.updatePage()
-  newFetchPicture.fetchFunc()
-  .then(createMarkup)
-
-}
-
-
-function createMarkup(searchResult){
-    console.log(searchResult)
-
-  const { hits } = searchResult;
-    let allMarkup = '';
-
+if (newFetchPicture.query !== currentQuery) {
+  newFetchPicture.resetPage();
+  currentQuery = newFetchPicture.query;
   markupForm.innerHTML = '';
 
-  hits.forEach(({largeImageURL, tags, likes, views, comments, downloads}) => {
-  const markup = `<a href="${largeImageURL}" class="gallery-item"> 
-  <div class="info">
-    <img class = "photo-img" src="${largeImageURL}" alt="${tags}" loading="lazy" />
-  <ul class="info-list"> 
-  <li class="info-capture"> 
-  <p class="list-p">Likes </p>
-  <span class="list-s">${likes}</span></li>
-  <li class="info-capture"> 
-  <p class="list-p">Views </p>
-  <span class="list-s">${views}</span></li>
-  <li class="info-capture"> 
-  <p class="list-p">Comments </p>
-  <span class="list-s">${comments}</span></li>
-  <li class="info-capture"> 
-  <p class="list-p">Downloads </p>
-  <span class="list-s">${downloads}</span></li>
-   </ul> 
-</div> </a>`
+  loadMoreBtn.classList.add('is-hidden')
 
+}
 
-allMarkup += markup;
+newFetchPicture.fetchFunc()
+  // .then(r => console.log(r))
+  .then( r => {
+  createMarkup(r);
 
-})
+  if(r.totalHits > 1){
+    Notiflix.Notify.info(`Hooray! We found ${r.totalHits} images.`)
+  }
 
-markupForm.insertAdjacentHTML('beforeend', allMarkup);
+  if(r.totalHits === newFetchPicture.page){
+    loadMoreBtn.classList.add('is-hidden')
+    return
+  }
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  caption: false,
-  captionDelay: 0,
-});
+  if(r.totalHits === 0){
+    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+    return
+  }
 
-lightbox.refresh()
+  loadMoreBtn.classList.remove('is-hidden')
 
-   }
+  })
+  // .catch( err => { 
+  //   console.log(err)
+  // })
+  
+}
+
+loadMoreBtn.addEventListener('click', handleLoadMore)
+
+ function handleLoadMore() {
+  
+
+  if (newFetchPicture.query === '') {
+    Notiflix.Notify.warning('Please, fill the main field');
+    return;
+  }
+
+  newFetchPicture.updatePage();
+  newFetchPicture.fetchFunc()
+  .then(r => {
+    createMarkup(r);
+  })
+  
 
   
+}
+
+
+
+
+function createMarkup({ hits }) {
+
+
+  const markup = hits
+    .map(
+      ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+        return `<div class="photo-card">
+          <a href="${largeImageURL}" class="photo-link">
+            <img class="photo-img" src="${webformatURL}" alt="${tags}" loading="lazy" />
+          </a>
+          <div class="info">
+            <p class="info-item likes">
+              <b>Likes</b>
+              ${likes}
+            </p>
+            <p class="info-item views">
+              <b>Views</b>
+              ${views}
+            </p>
+            <p class="info-item comments">
+              <b>Comments</b>
+              ${comments}
+            </p>
+            <p class="info-item downloads">
+              <b>Downloads</b>
+              ${downloads}
+            </p>
+          </div>
+        </div>`;
+      }
+    )
+    .join('');
+
+  markupForm.insertAdjacentHTML('beforeend', markup);
+  lightbox.refresh();
+
+}
+
+
+$('.gallery').infinitescroll({
+  loading: {
+    finishedMsg: '<p>No more items to load.</p>',
+    img: 'path/to/loading.gif',
+    msgText: '<p>Loading more items...</p>',
+  },
+  nextSelector: '.load-more', // Selector for the "Load More" button
+  navSelector: false, // No pagination container
+  itemSelector: '.photo-card', // Selector for each item in the list
+  bufferPx: 40, // Number of pixels from the bottom of the page at which to trigger the loading
+  errorCallback: function () {
+    console.log('Error loading more items.');
+  },
+});
+
+
+
+
+
+
+
+
+
 
 

@@ -6,32 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="./sass/layouts/_mainform.scss">
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.infinitescroll/3.0.6/jquery.infinitescroll.min.js"></script>
+
     <title>Homework 11</title>
   </head>
   <body>
 
     <div class="container">
+     
       <form class="search-form" id="search-form">
         <input
          class="search-form_input"
           type="text"
           name="searchQuery"
           autocomplete="off"
-          placeholder="Search images..."
-        />
-        <button class="submit-btn" type="submit">Search</button>
+          placeholder="Search images... " />
+
+      <button class="submit-btn" type="submit">Search</button>
       </form>
-      
+   
       <div class="gallery">
       </div>
+ 
 
-      <button type="button" class="load-more">Load more</button>
-
+      <button type="button" class="load-more is-hidden">Load more</button>
     </div>
 
-   
-  
-
     <script src="./index.js" type="module"></script> 
+
   </body>
 </html>

@@ -1,10 +1,4 @@
-.container{
-    width: 1200px;
-    padding-left: 15px;
-    padding-right: 15px;
-    margin:0 auto;
-    outline: solid tomato;
-}
+
 
 *{
     margin: 0;
@@ -44,99 +38,113 @@ img{
 }
 
 
+.container{
+    width: 1200px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin:0 auto;
+    outline: solid tomato;
 
-.search-form {
-    // margin-left: auto;
-    //  margin: auto;
-
-    padding-top: 40px;
-    padding-bottom: 40px;
-    
-    background-color: rgba(132, 161, 120, 1);
-    border: 1px solid tomato;
+   
 }
 
-.search-form_input{
+
+
+.search-form {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
     
-    padding-right: 15px;
-    padding-left: 15px;
+    padding: 40px;
+    background-color: rgba(132, 161, 120, 1);
+    border: 1px solid tomato;
+
+}
+
+
+.search-form_input{
+    display: block;
+    // margin: auto;
+    margin-left: auto; 
 
     height: 50px;
-    width: 400px;
+    width: 300px;
+    padding-left: 15px; 
+
     border-radius: 5px;
     border: transparent;
    
 }
 
-.submit-btn {
-    display: block;
-    margin: 0 auto;
+.search-form_input:focus{
+    outline: none;
 }
 
+// .search-form_input::placeholder{
+//     padding-left: 15px;
 
 
+// }
+.submit-btn {
+    border: none;
+    border-radius: 5px;
+    height: 50px;
+    width: 50px;
+
+    margin-left: -50px;
+    margin-right: auto;
+}
 
 .gallery{
-    margin-top: 10px;
-    margin-bottom: 10px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-  
     max-width: auto 0;
+    margin-top: 10px;
+    margin-bottom: -30px;
+    gap: 10px;
+
+
+    transition: background-color 0.5s ease-in-out;
+}
+
+.gallery-scrolling {
+    background-color: lightblue; /* Змініть колір, який вам подобається */
+}
+
+.photo-card {
+    width: 285px;
+    margin-bottom: 30px;
+    border: 1px solid black;
+
 }
 
 
-.info{
-    
-  display: flex;
-  flex-direction: column;  
-  border: 1px solid salmon; 
-  width: 285px;
+.photo-img {
+    display: block;
+    width: 100%;
+    height: 245px;
+
+}
+
+
+.info {
+    display: flex;
+    gap: 5px;
+    width: 100%;
   
 }
 
 
-.info-list{
-    display: flex;
-    gap: 15px;
-    align-content: center;
-    
-}
-
-.info-capture{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    
+.info-item {
+    text-align: center;
 }
 
 
-.photo-img{
-    display: block;
-    height: 200px;
-    
-}
-
-.image-capture{
-    display: flex;
-    display: inline-block;
-    align-items: center;
-}
-
-.list-p{
-    font-weight:bold;
-    font-size:14px
-}
-
-.list-s{
-    font-size:14px
-
-}
 
 .load-more {
     display: block;
-    margin: 0 auto;
+    margin: 10px auto;
    
     width: 100px;
     height: 40px;
@@ -146,4 +154,8 @@ img{
     border: transparent;
     
     
+}
+
+.is-hidden{
+    display: none;
 }
