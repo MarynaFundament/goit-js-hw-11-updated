@@ -10,6 +10,7 @@ const newFetchPicture = new NewFetchPicture()
 
 const form = document.querySelector('.search-form')
 const submitBtn = document.querySelector('.submit-btn')
+
 const markupForm = document.querySelector('.gallery')
 const loadMoreBtn = document.querySelector('.load-more')
 const inputEl = document.querySelector('.search-form_input')
