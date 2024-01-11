@@ -129,20 +129,20 @@ function createMarkup({ hits }) {
 }
 
 
-$('.gallery').infinitescroll({
-  loading: {
-    finishedMsg: '<p>No more items to load.</p>',
-    img: 'path/to/loading.gif',
-    msgText: '<p>Loading more items...</p>',
-  },
-  nextSelector: '.load-more', // Selector for the "Load More" button
-  navSelector: false, // No pagination container
-  itemSelector: '.photo-card', // Selector for each item in the list
-  bufferPx: 40, // Number of pixels from the bottom of the page at which to trigger the loading
-  errorCallback: function () {
-    console.log('Error loading more items.');
-  },
-});
+// $('.gallery').infinitescroll({
+//   loading: {
+//     finishedMsg: '<p>No more items to load.</p>',
+//     img: 'path/to/loading.gif',
+//     msgText: '<p>Loading more items...</p>',
+//   },
+//   nextSelector: '.load-more', // Selector for the "Load More" button
+//   navSelector: false, // No pagination container
+//   itemSelector: '.photo-card', // Selector for each item in the list
+//   bufferPx: 40, // Number of pixels from the bottom of the page at which to trigger the loading
+//   errorCallback: function () {
+//     console.log('Error loading more items.');
+//   },
+// });
 
 
 
