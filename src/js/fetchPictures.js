@@ -1,3 +1,18 @@
+import axios from "axios";
+
+// loader
+
+const loaderContainer = document.querySelector('.loader')
+function showLoader() {
+  loaderContainer.classList.remove('is-hidden');
+}
+
+function hideLoader() {
+  loaderContainer.classList.add('is-hidden');
+}
+
+// fetch
+
 export default class NewFetchPicture{
 
 
@@ -5,31 +20,43 @@ export default class NewFetchPicture{
  #KEY = '39518708-26ab694120e376c6ae35268e7'
  query = '';
  page= 1;
- per_page = 24;
+ per_page = 40;
  image_type='photo';
  safesearch='true';
  orientation='horizontal'
 
+ async fetchFunc() {
+  const searchParams = new URLSearchParams({
+    query: this.query,
+    page: this.page,
+    per_page: this.per_page,
+    image_type: this.image_type,
+    safesearch: this.safesearch,
+    orientation: this.orientation,
+  });
 
- fetchFunc(){
- const searchParams = new URLSearchParams({
-   query: this.query,
-   page: this.page,
-   per_page: this.per_page,
-   image_type: this.image_type,
-   safesearch: this.safesearch,
-   orientation:this.orientation
-})
+  try {
+    showLoader();
 
-// console.log(this.query);
+    const response = await axios.get(`${this.#URL}/?key=${this.#KEY}&${searchParams}&q=${this.query}`);
+    
+    return response.data;
 
-return fetch(`${this.#URL}/?key=${this.#KEY}&${searchParams}&q=${this.query}`)
-       .then(response => response.json())
-      //  .then(r => console.log(this.query))
-       .catch((error) => {
-        console.error(`Fetch error: ${error}`);
-});
+
+  } catch (error) {
+    console.error(`Axios error: ${error.message}`);
+    throw error; 
+  }
+
+  finally{
+      
+    setTimeout(() => {
+      hideLoader();
+    }, 4000);
+
+  }
 }
+
 
 updatePage(){
 this.page += 1
@@ -47,6 +74,8 @@ set query(newRes) {
   this.query = newRes;
 }
 }
+
+
 
 
 
